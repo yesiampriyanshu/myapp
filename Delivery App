@@ -1,0 +1,27 @@
+public class MainActivity extends AppCompatActivity {
+    private Button btnOrder;
+    private EditText etFood;
+    private TextView tvFood;
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+
+        etFood = (EditText) findViewById(R.id.et_food);
+        btnOrder = (Button) findViewById(R.id.btn_order);
+        tvFood = (TextView) findViewById(R.id.tv_food);
+
+        btnOrder.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String food = etFood.getText().toString().trim();
+                if (!food.equals("")) {
+                    tvFood.setText("Your " + food + " is on the way!");
+                } else {
+                    Toast.makeText(MainActivity.this, "Please enter a food item", Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+    }
+}
