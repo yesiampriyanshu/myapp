@@ -1,0 +1,72 @@
+public class MyGameActivity extends Activity {
+ 
+    private MyGameView mGameView;
+ 
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+ 
+        // Initialize the game view
+        mGameView = new MyGameView(this);
+ 
+        // Set the content view to the game view
+        setContentView(mGameView);
+    }
+ 
+    @Override
+    protected void onPause() {
+        super.onPause();
+        mGameView.pause();
+    }
+ 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        mGameView.resume();
+    }
+ 
+    private class MyGameView extends SurfaceView implements Runnable {
+ 
+        private Thread mGameThread = null;
+        private SurfaceHolder mHolder;
+        private volatile boolean mRunning = false;
+ 
+        public MyGameView(Context context) {
+            super(context);
+            mHolder = getHolder();
+        }
+ 
+        @Override
+        public void run() {
+            while (mRunning) {
+                if (mHolder.getSurface().isValid()) {
+                    Canvas canvas = mHolder.lockCanvas();
+ 
+                    // Draw the game objects
+                    // ...
+ 
+                    mHolder.unlockCanvasAndPost(canvas);
+                }
+            }
+        }
+ 
+        public void pause() {
+            mRunning = false;
+            while (true) {
+                try {
+                    mGameThread.join();
+                    break;
+                } catch (InterruptedException e) {
+                    // retry
+                }
+            }
+            mGameThread = null;
+        }
+ 
+        public void resume() {
+            mRunning = true;
+            mGameThread = new Thread(this);
+            mGameThread.start();
+        }
+    }
+}
